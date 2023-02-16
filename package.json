@@ -1,21 +1,14 @@
 {
   "name": "todo-list-api",
   "version": "1.0.0",
-  "description": "Todo list application",
+  "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon index"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jabariqusai/todo-list-api.git"
+    "start" : "nodemon index"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jabariqusai/todo-list-api/issues"
-  },
-  "homepage": "https://github.com/jabariqusai/todo-list-api#readme",
   "dependencies": {
     "express": "^4.18.2"
   },
