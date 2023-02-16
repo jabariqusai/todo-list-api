@@ -1,6 +1,7 @@
 {
   "name": "todo-list-api",
   "version": "1.0.0",
+  "type":"module",
   "description": "Todo list application",
   "main": "index.js",
   "scripts": {
