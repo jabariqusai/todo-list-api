@@ -40,6 +40,7 @@ app.post ('/todos' , (req , res) => {
     return ;
   }
   const newTodoItem = req.body ;
+  console.log(newTodoItem);
   if (!newTodoItem) {
     res.send ('please send me sth to add')
     return  ;
@@ -52,12 +53,55 @@ app.post ('/todos' , (req , res) => {
     res.send ('the item you are trying to add is already exists , try to edit it instead')
     return  ;
   }
-  if (newTodoItem.status !== 'done' || newTodoItem.status !== 'pending') {
+  if (newTodoItem.status !== 'done' && newTodoItem.status !== 'pending') {
     res.send ('invalid status type , it must be either (pending) or (done)') ;
     return ;
   }
+  todos.push({
+    id : newTodoItem.id , 
+    description : newTodoItem.description , 
+    status : newTodoItem.status
+  })
+  console.log(todos);
+  res.send('item added');
 })
 
+app.put ('/todos/:id' , (req , res) => {
+  console.log(' PUT /todos/:id invoked');
+  const id = req.params.id ; 
+  console.log('id' , id);
+  if (req.headers['content-type'] !== 'application/json') {
+    console.log('content type ' , req.headers['content-type']);
+    res.send ('invalid content type') ;
+    return ;
+  }
+  const newItem = req.body ;
+  if (!newItem) {
+    res.send ('please send me sth to add')
+    return  ;
+  }
+  if (!newItem.description || !newItem.id || !newItem.status) {
+    res.send ('invalid object content , it must contain id , description and status')
+    return  ;
+  }
+  if (newItem.status !== 'done' && newItem.status !== 'pending') {
+    res.send ('invalid status type , it must be either (pending) or (done)') ;
+    return ;
+  }
+  let found = false
+  todos.forEach(todoItem => {
+    if (todoItem.id === id) {
+      found = true ;
+      todoItem.description = newItem.description ;
+      todoItem.status = newItem.status ;
+    } 
+  })
+  if (!found) {
+    res.status (404).end()
+  }
+  console.log (todos)
+  res.status(204).end() ;
+})
 
 const port = 3002 ;
 app.listen(port , () => {console.debug('app started')}) 
