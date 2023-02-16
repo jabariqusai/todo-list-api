@@ -1,10 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import util from './util.js';
 
 const app = express();
 
-const items = [];;
+const items = [];
 
+app.use(cors());
 app.use(express.json());
 
 app.post('/', (req, res) => {
@@ -26,7 +28,7 @@ app.post('/', (req, res) => {
     return;
   }
 
-  items.push(body);
+  items.unshift(body);
 
   res.status(201).end();
 });
@@ -53,7 +55,7 @@ app.put('/:id', (req, res) => {
     return;
   }
 
-  items.unshift({ ...body, id });
+  items[index] = { ...body, id };
 
   res.end();
 });
@@ -74,7 +76,7 @@ app.delete('/:id', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send(items);
+  setTimeout(() => res.send(items), 1000);
 });
 
 app.listen(3001, () => console.debug('API is running and listening at localhost:3001'));
