@@ -67,6 +67,50 @@ app.put('/list/:id', (req, res) => {
   res.status(200).send(itemList);
 });
 
+app.post('/list', (req, res) => {
+  console.log('POST /list');
+  const itemList = req.body;
+
+  const contentType = req.headers["content-type"];
+
+  if (contentType !== 'application/json') {
+      console.log('the format isn\'t in json form ');
+
+      // 400: bad request
+      res.status(400).send("Invalid content payload").end();
+      return;
+  }
+  if (
+      !itemList ||
+      !itemList.id ||
+      !itemList.description ||
+      !itemList.status
+  ) {
+      console.log("the content isn\'t like what I am expected");
+
+      // 400: bad request
+      res.status(400).send("expected id, description and status !").end();
+      return;
+  }
+
+  if (list.find(item => item.id === car.id)) {
+      console.log("this item is already exist");
+
+      console.log("the list  :", list);
+
+      // 409: conflict 
+      res.status(409).send("it is exist, no need to send it again !").end();
+      return;
+  }
+
+  list.push(itemList);
+
+  console.log("item added to the list !");
+  console.log("The list : ", list);
+
+  //201: created
+  res.status(201).send("Created successfully").end();
+});
 
 const port = 3001;
 app.listen(port, () => console.log('listening on port ', port));
