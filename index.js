@@ -1,80 +1,90 @@
-import express from 'express';
-import util from './util.js';
+import express from "express";
+import cors from 'cors';
+
+let todoList = [
+  {
+    "id": "1",
+    "description": "test desc",
+    "status": "pending"
+  },
+  {
+    "id": "2",
+    "description": "test desc 2",
+    "status": "pending"
+  }
+];
 
 const app = express();
 
-const items = [];;
-
 app.use(express.json());
+app.use(cors());
 
-app.post('/', (req, res) => {
-  if (req.headers['content-type'] !== 'application/json') {
-    res.status(400).send('Invalid content type');
+app.post('/todo', (req, res) => {
+  const todo = req.body;
+  console.log('todo', todo);
+  if (
+    !todo ||
+    !todo.id ||
+    !todo.description ||
+    !todo.status
+  ) {
+    res.status(409).send('Not a todo item ').end();
     return;
   }
 
-  const body = req.body;
-  const valid = util.validateItem(body);
-
-  if (!valid) {
-    res.status(400).send('Invalid request payload');
-    return;
+  const todoIndex = todoList.findIndex(item => item.id === todo.id);
+  if (todoIndex == -1) {
+    todoList.push(todo);
+    res.status(201).send('task added successfully').end();
   }
-
-  if (items.find(item => item.id === body.id)) {
-    res.status(409).send('A resource with the provided id already exists. Please call PUT / instead');
-    return;
+  else {
+    res.status(409).send('id already exist').end();
   }
-
-  items.push(body);
-
-  res.status(201).end();
+  console.log('todoList', todoList);
 });
 
-app.put('/:id', (req, res) => {
-  if (req.headers['content-type'] !== 'application/json') {
-    res.status(400).send('Invalid content type');
-    return;
+app.delete('/todo/:id', (req, res) => {
+  const todoId = req.params.id;
+  const todoIndex = todoList.findIndex(item => item.id === todoId);
+
+  if (todoIndex != -1) {
+    todoList = todoList.filter(item => item.id !== todoId);
+    res.status(200).send('item deleted successfully').end();
+  } else {
+    res.status(409).send('item is not exist').end();
   }
 
-  const id = req.params.id;
-  const body = req.body;
-  const valid = util.validateItem(body);
-
-  if (!valid) {
-    res.status(400).send('Invalid request payload');
-    return;
-  }
-
-  const index = items.findIndex(item => item.id === id);
-
-  if (index === -1) {
-    res.status(404).send('The item you\'re trying to update does not exist. Call POST / instead');
-    return;
-  }
-
-  items.unshift({ ...body, id });
-
-  res.end();
+  console.log('todoList', todoList);
 });
 
-app.delete('/:id', (req, res) => {
-  const id = req.params.id;
+app.get('/todo', (req, res) => {
+  res.status(200).send(todoList).end();
+});
 
-  const index = items.findIndex(item => item.id === id);
 
-  if (index === -1) {
-    res.status(404).end();
+app.put('/todo', (req, res) => {
+  const newTodo = req.body;
+
+  if (
+    !newTodo ||
+    !newTodo.id ||
+    !newTodo.description ||
+    !newTodo.status
+  ) {
+    res.status(409).send('Not a todo item ').end();
     return;
   }
 
-  items.splice(index, 1);
+  const todoIndex = todoList.findIndex(item => item.id === newTodo.id);
 
-  res.end();
+  if (todoIndex != -1) {
+    todoList[todoIndex] = newTodo;
+    res.status(200).send(todoList[todoIndex]).end();
+  } else {
+    res.status(409).send('no such item').end();
+  }
+  console.log('todoList: ', todoList);
 });
 
-app.get('/', (req, res) => {
-  res.send(items);
-});
-
-app.listen(3001, () => console.debug('API is running and listening at localhost:3001'));
+const PORT = 8081;
+app.listen(PORT, () => console.log('app listen on port ', PORT));
