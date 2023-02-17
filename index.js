@@ -12,36 +12,9 @@ app.get('/todo', (req, res) => {
   res.send(todo);
 });
 
-app.delete('/todo/:id', (req, res) => {
-  const id = req.params.id;
-  todo = todo.filter((task) => task.id !== id); // send 404 if not found!!!
-  if (todo) {
-    res.send(todo);
-    return;
-  }
-  else
-    res.status(404).end();
-});
-
-app.put('/todo/:id', (req, res) => {
-  const id = req.params.id;
-  const description = req.body.description;
-  const status = req.body.status;
-
-  const task = todo.find(task => task.id === id);
-
-  if (task) {
-    task.description = description;
-    task.status = status;
-    res.send(task);
-    return;
-  }
-  res.status(404).end();
-});
-
 app.post('/todo', (req, res) => {
   const id = req.body.id;
-
+  
   const found = todo.find(task => task.id === id);
   if (found) {
     console.log("found")
@@ -53,6 +26,33 @@ app.post('/todo', (req, res) => {
     console.log(todo);
     res.end();
   }
+});
+
+app.put('/todo/:id', (req, res) => {
+  const id = req.params.id;
+  const description = req.body.description;
+  const status = req.body.status;
+  
+  const task = todo.find(task => task.id === id);
+  
+  if (task) {
+    task.description = description;
+    task.status = status;
+    res.send(task);
+    return;
+  }
+  res.status(404).end();
+});
+
+app.delete('/todo/:id', (req, res) => {
+  const id = req.params.id;
+  todo = todo.filter((task) => task.id !== id); // send 404 if not found!!!
+  if (todo) {
+    res.send(todo);
+    return;
+  }
+  else
+    res.status(404).end();
 });
 
 const port = 3001;
