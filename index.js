@@ -58,5 +58,13 @@ app.delete('/todo/:id', (req, res) => {
     res.status(404).end();
 });
 
+//delete all items
+app.delete('/todo', (req, res) => {
+  console.log(todo);
+  todo = todo.filter(() => false);
+  console.log(todo);
+  res.status(204).end();
+})
+
 const port = 3001;
 app.listen(port, () => console.log(`listening on port ${port}`));
