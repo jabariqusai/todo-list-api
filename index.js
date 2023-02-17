@@ -1,5 +1,6 @@
 import express from "express";
 import cors from 'cors';
+import util from './util.js';
 
 let todoList = [
   {
@@ -22,12 +23,8 @@ app.use(cors());
 app.post('/todo', (req, res) => {
   const todo = req.body;
   console.log('todo', todo);
-  if (
-    !todo ||
-    !todo.id ||
-    !todo.description ||
-    !todo.status
-  ) {
+
+  if (!util.validateItem(todo)) {
     res.status(409).send('Not a todo item ').end();
     return;
   }
@@ -65,12 +62,7 @@ app.get('/todo', (req, res) => {
 app.put('/todo', (req, res) => {
   const newTodo = req.body;
 
-  if (
-    !newTodo ||
-    !newTodo.id ||
-    !newTodo.description ||
-    !newTodo.status
-  ) {
+  if (!util.validateItem(newTodo)) {
     res.status(409).send('Not a todo item ').end();
     return;
   }
