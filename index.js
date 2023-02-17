@@ -1,4 +1,4 @@
-import { express } from 'express';
+import express from 'express';
 
 const app = express();
 app.use(express.json());
@@ -9,13 +9,8 @@ const list = [];
 app.get('/list', (req, res) => {
 
   console.log('GET /list');
-  const listItems = res.body || undefined;
-  if (!listItems) {
-    res.status(404).end();
-    return;
-  }
 
-  res.status(200).end();
+  res.send(list).status(200).end();
 });
 
 app.delete('/list/:id', (req, res) => {
@@ -93,7 +88,7 @@ app.post('/list', (req, res) => {
       return;
   }
 
-  if (list.find(item => item.id === car.id)) {
+  if (list.find(item => item.id === itemList.id)) {
       console.log("this item is already exist");
 
       console.log("the list  :", list);
