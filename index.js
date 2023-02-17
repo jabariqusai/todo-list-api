@@ -9,7 +9,7 @@ let todo = [
 ];
 
 app.get('/todo', (req, res) => {
-  res.send(todo);
+  res.status(200).send(todo);
 });
 
 app.post('/todo', (req, res) => {
@@ -24,7 +24,7 @@ app.post('/todo', (req, res) => {
   else {
     todo.push(req.body);
     console.log(todo);
-    res.end();
+    res.status(201).end();
   }
 });
 
@@ -38,7 +38,7 @@ app.put('/todo/:id', (req, res) => {
   if (task) {
     task.description = description;
     task.status = status;
-    res.send(task);
+    res.status(204).send();
     return;
   }
   res.status(404).end();
@@ -48,7 +48,7 @@ app.delete('/todo/:id', (req, res) => {
   const id = req.params.id;
   todo = todo.filter((task) => task.id !== id); // send 404 if not found!!!
   if (todo) {
-    res.send(todo);
+    res.status(204).end();
     return;
   }
   else
