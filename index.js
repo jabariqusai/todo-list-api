@@ -14,7 +14,7 @@ let todo = [
 app.get('/todo', (req, res) => {
   setTimeout(() => {
     res.status(200).send(todo);
-  }, 1000);
+  }, 500);
 });
 
 app.post('/todo', (req, res) => {
@@ -60,7 +60,7 @@ app.delete('/todo/:id', (req, res) => {
 
 //delete all items
 app.delete('/todo', (req, res) => {
-  todo = todo.filter(() => false);
+  todo = []
   res.status(204).end();
 })
 
