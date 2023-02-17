@@ -12,7 +12,9 @@ let todo = [
 ];
 
 app.get('/todo', (req, res) => {
-  res.status(200).send(todo);
+  setTimeout(() => {
+    res.status(200).send(todo);
+  }, 1000);
 });
 
 app.post('/todo', (req, res) => {
@@ -20,13 +22,11 @@ app.post('/todo', (req, res) => {
   
   const found = todo.find(task => task.id === id);
   if (found) {
-    console.log("found")
     res.status(400).send('task with same id already exists');
     return;
   }
   else {
     todo.push(req.body);
-    console.log(todo);
     res.status(201).end();
   }
 });
@@ -60,9 +60,7 @@ app.delete('/todo/:id', (req, res) => {
 
 //delete all items
 app.delete('/todo', (req, res) => {
-  console.log(todo);
   todo = todo.filter(() => false);
-  console.log(todo);
   res.status(204).end();
 })
 
