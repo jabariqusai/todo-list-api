@@ -1,5 +1,8 @@
 import express from "express";
+import cors from "cors";
+
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const items = [
@@ -11,7 +14,7 @@ const items = [
 
 //post part 
 
-app.post('/todo', (req, res) => {
+app.post('/', (req, res) => {
 
   console.log('POST /todo');
 
@@ -48,7 +51,7 @@ app.post('/todo', (req, res) => {
 
 // get part 
 
-app.get('/todo/:id', (req, res) => {
+app.get('/:id', (req, res) => {
 
   console.debug('GET /todo /:id');
 
@@ -66,7 +69,7 @@ app.get('/todo/:id', (req, res) => {
 
 // modify object PUT method 
 
-app.put('/todo/:id', (req, res) => {
+app.put('/:id', (req, res) => {
 
   console.debug('GET /todo /:id');
 
@@ -98,7 +101,7 @@ app.put('/todo/:id', (req, res) => {
 
 //delete part
 
-app.delete('/todo/:id', (req, res) => {
+app.delete('/:id', (req, res) => {
 
   console.debug('DELETE /todo/:id invoked');
 
@@ -122,7 +125,7 @@ app.delete('/todo/:id', (req, res) => {
 
 //list part
 
-app.get('/todo', (req, res) => {
+app.get('/', (req, res) => {
 
   console.debug('GET /todo invoked');
 
