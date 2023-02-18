@@ -67,9 +67,9 @@ app.put('/:id', (req, res) => {
 
 });
 
-app.post('/list', (req, res) => {
+app.post('/', (req, res) => {
 
-  console.log('POST /list');
+  console.log('POST /');
 
   const body = req.body;
 
