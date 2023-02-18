@@ -18,7 +18,8 @@ const todos = [
 
 app.get ('/todos' , (req , res) => {
   console.log('GET /todos inveked ');
-  res.send(todos)
+  setTimeout (() => res.send(todos) , 3000)
+  
 })
 
 app.delete ('/todos/:id' , (req , res) => {
