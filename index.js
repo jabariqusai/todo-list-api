@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 
   console.log('GET /');
 
-  res.send(list).status(200).end();
+  setTimeout(()=> res.send(list).end(), 1000);
 });
 
 app.delete('/:id', (req, res) => {
@@ -45,10 +45,10 @@ app.put('/:id', (req, res) => {
 
   const id = req.params.id;
   const body = req.body;
-  const itemList = list.find(item => item.id === id);
+  const index = list.findIndex(item => item.id === id);
 
   const valid = util.validateItem(body);
-  if (!itemList) {
+  if (index === -1) {
     //404 : not found
     res.status(404).send("The resource that you want to update isn\'t found ! ");
     return;
@@ -61,11 +61,9 @@ app.put('/:id', (req, res) => {
     return;
   }
 
-  itemList.description = body.description || itemList.description;
-  itemList.status = body.status || itemList.status;
-
-  //200: OK
-  res.status(200).send(itemList);
+  list[index] = { ...body, id };
+  
+  res.status(201).send(itemList);
 
 });
 
@@ -101,7 +99,8 @@ app.post('/list', (req, res) => {
     return;
   }
 
-  list.push(body);
+  // unshift function will push the object at the beginning of the array , and return the new length of the new array
+  list.unshift(body);
 
   console.log("item added to the list !");
   console.log("The list : ", list);
