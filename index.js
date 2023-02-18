@@ -1,4 +1,5 @@
 import express from 'express';
+import util from './util';
 
 const app = express();
 app.use(express.json());
@@ -6,15 +7,17 @@ app.use(express.json());
 
 const list = [];
 
-app.get('/list', (req, res) => {
+app.get('/', (req, res) => {
 
-  console.log('GET /list');
+  console.log('GET /');
 
   res.send(list).status(200).end();
 });
 
-app.delete('/list/:id', (req, res) => {
-  console.log('DELETE /list/:id');
+app.delete('/:id', (req, res) => {
+
+  console.log('DELETE /:id');
+
   const id = res.params.id;
 
   const index = list.findIndex(item => item.id === id);
@@ -33,78 +36,79 @@ app.delete('/list/:id', (req, res) => {
   res.status(204).end();
 });
 
-app.put('/list/:id', (req, res) => {
+app.put('/:id', (req, res) => {
+
+  if (req.headers['content-type'] !== 'application/json') {
+    res.status(400).send('Invalid content type');
+    return;
+  }
+
   const id = req.params.id;
   const body = req.body;
   const itemList = list.find(item => item.id === id);
 
+  const valid = util.validateItem(body);
   if (!itemList) {
     //404 : not found
     res.status(404).send("The resource that you want to update isn\'t found ! ");
     return;
   }
-  if (!body) {
+
+  if (!valid) {
 
     // 400: bad request
-    res.status(400).send("Please send a body to complete the updating !");
+    res.status(400).send("expected data like description or status to complete the update !").end();
     return;
   }
-  if (!body.description && !body.status) {
 
-    // 400: bad request
-    res.status(400).send("expected description or status !").end();
-    return;
-  }
   itemList.description = body.description || itemList.description;
   itemList.status = body.status || itemList.status;
 
   //200: OK
   res.status(200).send(itemList);
+
 });
 
 app.post('/list', (req, res) => {
+
   console.log('POST /list');
-  const itemList = req.body;
 
-  const contentType = req.headers["content-type"];
+  const body = req.body;
 
-  if (contentType !== 'application/json') {
-      console.log('the format isn\'t in json form ');
+  const valid = util.validateItem(body);
 
-      // 400: bad request
-      res.status(400).send("Invalid content payload").end();
-      return;
-  }
-  if (
-      !itemList ||
-      !itemList.id ||
-      !itemList.description ||
-      !itemList.status
-  ) {
-      console.log("the content isn\'t like what I am expected");
+  if (req.headers["content-type"] !== 'application/json') {
+    console.log('the format isn\'t in json form ');
 
-      // 400: bad request
-      res.status(400).send("expected id, description and status !").end();
-      return;
+    // 400: bad request
+    res.status(400).send("Invalid content payload").end();
+    return;
   }
 
-  if (list.find(item => item.id === itemList.id)) {
-      console.log("this item is already exist");
-
-      console.log("the list  :", list);
-
-      // 409: conflict 
-      res.status(409).send("it is exist, no need to send it again !").end();
-      return;
+  if (!valid) {
+    // 400: bad request
+    res.status(400).send("expected id, description and status !").end();
+    return;
   }
 
-  list.push(itemList);
+  if (list.find(item => item.id === body.id)) {
+    console.log("this item is already exist");
+
+    console.log("the list  :", list);
+
+    // 409: conflict 
+    res.status(409).send("it is exist, no need to send it again !").end();
+    return;
+  }
+
+  list.push(body);
 
   console.log("item added to the list !");
   console.log("The list : ", list);
 
   //201: created
   res.status(201).send("Created successfully").end();
+
 });
 
 const port = 3001;
