@@ -4,79 +4,69 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-let tasks = [
-  {
-    id: "12",
-    description: "first",
-    status: "done"
-  },
-  {
-    id: "13",
-    description: "second",
-    status: "done"
-  },
-  {
-    id: "123",
-    description: "second",
-    status: "pending"
-  }
-];
+let tasks = [];
 
 app.post('/addTask', (req, res) => {
-  console.log('/POST');
-  const task = req.body;
+    console.log('/POST one item');
+    const task = req.body;
 
-  if (req.headers['content-type'] !== 'application/json') {
-    res.status(400).send('Invalid Payload');
-    return;
-  }
+    if (req.headers['content-type'] !== 'application/json') {
+        res.status(400).send('Invalid Payload');
+        return;
+    }
 
-  if (!task || !task.id || !task.description || !task.status) {
-    res.status(400).send('Invalid Payload');
-    return;
-  }
-  console.log(task);
-  if (tasks.find(item => item.id === task.id)) {
-    res.status(409).send('Invalid Payload, repeated item');
-    return;
-  }
+    if (!task || !task.id || !task.description || !task.status) {
+        res.status(400).send('Invalid Payload');
+        return;
+    }
+    if (tasks.find(item => item.id === task.id)) {
+        res.status(409).send('Invalid Payload, repeated item');
+        return;
+    }
 
-  tasks.push(task);
-  res.status(201).end();
+    tasks.push(task);
+    res.status(201).end();
 });
 
 app.get('/getTasks', (req, res) => {
-  console.log('/GET');
-  res.send(tasks);
+    console.log('/GET all items');
+    res.send(tasks);
 });
 
 app.put('/editTask/:id', (req, res) => {
+    console.log('/PUT one item');
+    let id = req.params.id;
+    let newTask = req.body;
 
-  let id = req.params.id;
-  let newTask = req.body;
-  if (!newTask || !newTask.id || !newTask.description || !newTask.status) {
-    res.status(400).send('Invalid Payload');
-    return;
-  }
-  let index = tasks.findIndex(item => item.id === id);
-  console.log(index);
-  if (index === -1) {
-    res.status(404).end();
-    return;
-  }
-  tasks[index] = newTask;
-  console.log(tasks);
-  res.status(200).end();
+    if (
+        req.headers['content-type'] !== 'application/json' ||
+        !newTask ||
+        !newTask.id ||
+        !newTask.description ||
+        !newTask.status
+    ) {
+        res.status(400).send('Invalid Payload');
+        return;
+    }
+
+    let index = tasks.findIndex(item => item.id === id);
+    if (index === -1) {
+        res.status(404).end();
+        return;
+    }
+    tasks[index] = newTask;
+    res.status(200).end();
 });
 
 app.delete('/deleteTask/:id', (req, res) => {
-  let id = req.params.id;
-  if (tasks.find(item => item.id === id))
-    tasks = tasks.filter(item => item.id !== id);
-  else {
-    res.send(404).end();
-  }
-  res.end();
+    console.log('/DELETE one item');
+    let id = req.params.id;
+    if (tasks.find(item => item.id === id))
+        tasks = tasks.filter(item => item.id !== id);
+    else {
+        res.send(404).end();
+    }
+    res.end();
 });
 
 const port = 3001;
