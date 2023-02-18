@@ -1,5 +1,5 @@
 import express from 'express';
-import util from './util';
+import util from './util.js';
 import cors from 'cors';
 
 const app = express();
@@ -20,7 +20,7 @@ app.delete('/:id', (req, res) => {
 
   console.log('DELETE /:id');
 
-  const id = res.params.id;
+  const id = req.params.id;
 
   const index = list.findIndex(item => item.id === id);
   console.log("the index = ", index);
@@ -35,7 +35,7 @@ app.delete('/:id', (req, res) => {
 
   console.log("list after delete :", list);
 
-  res.status(204).end();
+  res.status(200).end();
 });
 
 app.put('/:id', (req, res) => {
@@ -65,7 +65,7 @@ app.put('/:id', (req, res) => {
 
   list[index] = { ...body, id };
   
-  res.status(201).send(itemList);
+  res.status(201).end();
 
 });
 
