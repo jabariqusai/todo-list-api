@@ -1,17 +1,21 @@
+import util from './util.js';
 const express = require('express');
+const cors= require('cors');
+
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const Lists = [
   { "id": '111', "description": 'good', "status": 'pending' },
-  { "id": '222', "description": 'good', "status": 'done' },
-  { "id": '333', "description": 'good', "status": 'done' },
-  { "id": '444', "description": 'good', "status": 'pending' },
+  { "id": '222', "description": 'food', "status": 'done' },
+  { "id": '333', "description": 'mood', "status": 'done' },
+  { "id": '444', "description": 'rood', "status": 'pending' },
 ];
 
 app.get('/list', (req, res) => {
   console.log('working');
-  res.status(200).send(Lists);
+ setTimeout(()=>res.status(200).send(Lists),1000);
 });
 
 app.post('/list', (req, res) => {
@@ -22,26 +26,42 @@ app.post('/list', (req, res) => {
     return;
   }
 
+  const valid = util.validateItem(body);
 
+  if (!valid) {
+    res.status(400).send('Invalid request payload');
+    return;
+  }
   if (Lists.find(item => item.id === newItem.id)) {
-    res.status(409).send("go back");
+    res.status(409).send("go back the id is exscist");
     return;
   }
   Lists.push(newItem);
-  res.end();
+  //add to first array 
+  // items.unshift(newItem));
+  res.status(201).end();
 
 });
 
 
 app.put('/list/:id', (req, res) => {
+  if (req.headers['content-type'] !== 'application/json') {
+    res.status(400).send('Invalid content type');
+    return;
+  }
   const id = req.params.id;
-
   const newItem = Lists.find(item => item.id === id);
+  const body = req.body;
+  const valid = util.validateItem(body);
 
+  if (!valid) {
+    res.status(400).send('Invalid request payload');
+    return;
+  }
   if (!newItem) {
     res.status(404).send('the resorce does not exist ');
   }
-  const body = req.body;
+
 
   if (!body.description && !body.status) {
     res.status(400).send("the description and status  is not found ");
