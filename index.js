@@ -3,8 +3,9 @@ const app = express();
 app.use(express.json());
 
 const items = [
-  { id: "1500", description: "first item in to do app", status: "16" },
-  { id: "1560", description: "second item in to do app", status: "160 " }
+  { id: "1500", description: "first item in to do app", status: "pending" },
+  { id: "1560", description: "second item in to do app", status: "done" },
+  { id: "1600", description: "3rd item in to do app", status: "pending" }
 ];
 
 
@@ -83,7 +84,7 @@ app.put('/todo/:id', (req, res) => {
     return;
 
   }
-  if (!body.description && body.status) {
+  if (!body.description && !body.status) {
     res.status(400).send("Please pass at least a description or status value");
     return;
 
