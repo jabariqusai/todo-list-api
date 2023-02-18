@@ -1,90 +1,82 @@
-import express from 'express'
+import express from 'express';
+import cors from 'cors';
+import util from './util.js';
 
 const app = express();
 
+const items = [];
+
+app.use(cors());
 app.use(express.json());
 
-const tasks = [{
-  id : "12445694",
-  description : "clean dishes",
-  Status : "done"
-}];
-
-app.get('/' , (req , res) => {
-   res.send(tasks);
-})
-
 app.post('/', (req, res) => {
-    const contentType = req.headers['content-type'];
-
-    if (contentType !== "application/json") {
-        res.status(400).send('invalid request payload type')
-        return
-    }
-
-    const task = req.body;
-
-    if (!task || !task.description || !task.Status) {
-        console.log('invalid request body');
-        res.status(400).send('invalid request payload')
-        return
-    }
-
-    if (tasks.find(item => item.id === task.id)) {
-        console.log('the item that you try to add is already exist');
-        console.log(tasks);
-        res.status(409).send('already existed request payload')
-        return
-    }
-
-    tasks.push(task);
-
-    console.log('task added', tasks);
-
-    res.status(201).end();
-})
-
-app.put('/:id', (req, res) => {
-  const id = req.params.id;
+  if (req.headers['content-type'] !== 'application/json') {
+    res.status(400).send('Invalid content type');
+    return;
+  }
 
   const body = req.body;
+  const valid = util.validateItem(body);
 
-  if (!body) {
-      res.status(400).send('invalid content type')
-      return
+  if (!valid) {
+    res.status(400).send('Invalid request payload');
+    return;
   }
 
-  if (!tasks.find(item => item.id === id)) {
-      res.status(404).send("the task the you try to edit is not found");
-      return
-  }
-  const task = tasks.find(item => item.id === id)
-  
-  if (!body.description && !body.Status) {
-      res.status(400).send("please send at least one property to edit")
-      return
+  if (items.find(item => item.id === body.id)) {
+    res.status(409).send('A resource with the provided id already exists. Please call PUT / instead');
+    return;
   }
 
-  task.Status = body.Status || task.Status;
-  task.description = body.description || task.description;
-  console.log(tasks);
-  res.send(task)
-})
+  items.unshift(body);
+
+  res.status(201).end();
+});
+
+app.put('/:id', (req, res) => {
+  if (req.headers['content-type'] !== 'application/json') {
+    res.status(400).send('Invalid content type');
+    return;
+  }
+
+  const id = req.params.id;
+  const body = req.body;
+  const valid = util.validateItem(body);
+
+  if (!valid) {
+    res.status(400).send('Invalid request payload');
+    return;
+  }
+
+  const index = items.findIndex(item => item.id === id);
+
+  if (index === -1) {
+    res.status(404).send('The item you\'re trying to update does not exist. Call POST / instead');
+    return;
+  }
+
+  items[index] = { ...body, id };
+
+  res.end();
+});
 
 app.delete('/:id', (req, res) => {
   const id = req.params.id;
 
-  const index = tasks.findIndex(item => item.id === id);
+  const index = items.findIndex(item => item.id === id);
 
-  tasks.splice(index, 1);
+  if (index === -1) {
+    res.status(404).end();
+    return;
+  }
 
-  console.log(tasks);
+  items.splice(index, 1);
 
-  res.status(204).end()
+  res.end();
+});
 
-})
-const port = 3001;
+app.get('/', (req, res) => {
+  setTimeout(() => res.send(items), 1000);
+});
 
-app.listen(port, () =>
-    console.log('hello world')
-);
+app.listen(3001, () => console.debug('API is running and listening at localhost:3001'));
