@@ -1,6 +1,6 @@
 import util from './util.js';
-const express = require('express');
-const cors= require('cors');
+import express from 'express';
+import cors from 'cors';
 
 const app = express();
 app.use(cors());
@@ -15,7 +15,7 @@ const Lists = [
 
 app.get('/list', (req, res) => {
   console.log('working');
- setTimeout(()=>res.status(200).send(Lists),1000);
+  setTimeout(() => res.status(200).send(Lists), 1000);
 });
 
 app.post('/list', (req, res) => {
@@ -67,7 +67,7 @@ app.put('/list/:id', (req, res) => {
     res.status(400).send("the description and status  is not found ");
     return;
   }
-  newItem.description= body.description || newItem.description;
+  newItem.description = body.description || newItem.description;
   newItem.status = body.status || newItem.status;
   res.send(newItem);
 
@@ -117,13 +117,13 @@ app.listen(3002, () => {
 //   if (color) {
 //     filteredCars = filteredCars.filter(item => item.color === color);
 //   }
-//   //sort number decinding 
+//   //sort number decinding
 //   if (sort === 'engineSize') {
 //     filteredCars = [...cars].sort((a, b) => b.engineSize - a.engineSize);
 //     console.log(sort);
 
 //   }
-//   //string ascinding 
+//   //string ascinding
 //   if (sort === 'color') {
 //     filteredCars = [...cars].sort((a, b) =>
 //       a.color.toLowerCase() > b.color.toLowerCase() ? 1 : -1,
