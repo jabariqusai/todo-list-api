@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
     !todo ||
     !todo.id ||
     !todo.description ||
-    !todo.status.includes(todo.status)
+    !todo.status
   ) {
     res.status(400).send("Invalid request payload.");
     return;
@@ -132,7 +132,7 @@ app.get('/', (req, res) => {
   console.debug('req.query', req.query);
 
   const page = req.query.page ? Number(req.query.page) : 0;
-  const size = req.query.size ? Number(req.query.size) : 4;
+  const size = req.query.size ? Number(req.query.size) : 100;
   const status = req.query.status ? req.query.status : undefined;
 
 
