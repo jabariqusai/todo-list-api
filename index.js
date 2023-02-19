@@ -4,7 +4,12 @@ import util from './util.js';
 
 const app = express();
 
-const items = [];
+const items = [
+  { id: '1676799541307', description: 'One', status: 'pending' },
+  { id: '1676799538155', description: 'Two', status: 'pending' },
+  { id: '1676799532235', description: 'Three', status: 'pending' },
+  { id: '1676799453355', description: 'Four', status: 'pending' }
+];
 
 app.use(cors());
 app.use(express.json());
@@ -29,7 +34,7 @@ app.post('/', (req, res) => {
   }
 
   items.unshift(body);
-
+  console.debug('new list: ',items)
   res.status(201).end();
 });
 
