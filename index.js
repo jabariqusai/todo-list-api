@@ -1,12 +1,12 @@
 const express = require('express');
-var cors = require('cors')
+var cors = require('cors');
 const app = express();
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 let lists = [{
-  id:"1",
-  description:"do homework",
-  status:"DONE",
+  id: "1",
+  description: "do homework",
+  status: "DONE",
 }];
 app.post('/list', (req, res) => {
   console.log('POST /list');
@@ -51,7 +51,7 @@ app.put('/list/:id', (req, res) => {
   }
   const body = req.body;
   console.log(body);
-  if (!body && body.status=="DONE") {
+  if (!body && body.status == "DONE") {
     res.status(400);
     return;
   }
@@ -62,8 +62,8 @@ app.put('/list/:id', (req, res) => {
   list.status = body.status || list.status;
   res.send(list);
 });
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
   res.status(200).send(lists);
-})
+});
 const port = 3003;
 app.listen(port, () => console.log("Server run at port", port));
