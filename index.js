@@ -15,18 +15,18 @@ const Lists = [
 
 app.get('/list', (req, res) => {
   console.log('working');
-  setTimeout(() => res.status(200).send(Lists), 1000);
+  setTimeout(() => res.status(201).send(Lists), 1000);
 });
 
 app.post('/list', (req, res) => {
-  const newItem = req.body;
+  const newItem = req.body || undefined;
   const contentType = req.headers['content-type'];
   if (contentType !== 'application/json') {
     res.status(400).send('bad request, expecting json data');
     return;
   }
 
-  const valid = util.validateItem(body);
+  const valid = util.validateItem(req.body);
 
   if (!valid) {
     res.status(400).send('Invalid request payload');
@@ -69,7 +69,7 @@ app.put('/list/:id', (req, res) => {
   }
   newItem.description = body.description || newItem.description;
   newItem.status = body.status || newItem.status;
-  res.send(newItem);
+  res.status(200).send(newItem);
 
   return;
 
