@@ -6,10 +6,9 @@ const app = express();
 
 const items = [];
 
-app.use(cors());
 app.use(express.json());
 
-app.post('/', (req, res) => {
+app.post('/item', (req, res) => {
   if (req.headers['content-type'] !== 'application/json') {
     res.status(400).send('Invalid content type');
     return;
@@ -33,7 +32,7 @@ app.post('/', (req, res) => {
   res.status(201).end();
 });
 
-app.put('/:id', (req, res) => {
+app.put('/item/:id', (req, res) => {
   if (req.headers['content-type'] !== 'application/json') {
     res.status(400).send('Invalid content type');
     return;
@@ -60,7 +59,7 @@ app.put('/:id', (req, res) => {
   res.end();
 });
 
-app.delete('/:id', (req, res) => {
+app.delete('/item/:id', (req, res) => {
   const id = req.params.id;
 
   const index = items.findIndex(item => item.id === id);
@@ -78,5 +77,5 @@ app.delete('/:id', (req, res) => {
 app.get('/', (req, res) => {
   setTimeout(() => res.send(items), 1000);
 });
-
-app.listen(3001, () => console.debug('API is running and listening at localhost:3001'));
+const port = 3001;
+app.listen(port, () => console.debug('server running  at ', port));
