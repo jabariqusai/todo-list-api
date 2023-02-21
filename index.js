@@ -57,7 +57,7 @@ app.post('/todos', (req, res) => {
     return;
   }
   if (newTodoItem.status !== 'done' && newTodoItem.status !== 'pending') {
-    res.send('invalid status type , it must be either (pending) or (done)');
+    res.status(201).send('invalid status type , it must be either (pending) or (done)');
     return;
   }
   todos.push({
