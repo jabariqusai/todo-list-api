@@ -57,7 +57,7 @@ app.put('/:id', (req, res) => {
 
   items[index] = { ...body, id };
 
-  res.end();
+  res.sendStatus(204);
 });
 
 app.delete('/:id', (req, res) => {
@@ -72,7 +72,7 @@ app.delete('/:id', (req, res) => {
 
   items.splice(index, 1);
 
-  res.end();
+  res.sendStatus(204);
 });
 
 app.get('/', (req, res) => {
