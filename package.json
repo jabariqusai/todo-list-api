@@ -18,13 +18,8 @@
   },
   "homepage": "https://github.com/jabariqusai/todo-list-api#readme",
   "dependencies": {
-<<<<<<< HEAD
-    "express": "^4.18.2",
-    "util": "^0.12.5"
-=======
     "cors": "^2.8.5",
     "express": "^4.18.2"
->>>>>>> 0ac30154c49a26613b883576ec4b8b7d6e41099d
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
