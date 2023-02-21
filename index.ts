@@ -2,7 +2,7 @@ import express from "express";
 import cors from 'cors';
 import util from './util.js';
 
-let todoList = [
+let todoList: ToDo[] = [
   {
     "id": "1",
     "description": "test desc",
@@ -60,7 +60,7 @@ app.get('/todo', (req, res) => {
 
 
 app.put('/todo', (req, res) => {
-  const newTodo = req.body;
+  const newTodo: ToDo = req.body;
 
   if (!util.validateItem(newTodo)) {
     res.status(409).send('Not a todo item ').end();
